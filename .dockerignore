@@ -1,0 +1,9 @@
+assets/**/*
+assets
+
+build/**/*
+build
+
+ops/**/*
+
+Pipfile*
