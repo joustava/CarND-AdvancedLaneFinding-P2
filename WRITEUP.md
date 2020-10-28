@@ -39,14 +39,11 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 [/TBD]
 
-<div style="content: '';clear: both;display: table;">
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/distorted_example.jpg" alt="Example of distorted calibration image" style="width:100%" />
-  </div>
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/undistorted_example.jpg" alt="Example of undistorted calibration image" style="width:100%" />
-  </div>
-</div>
+
+Input            |  Output
+:-------------------------:|:-------------------------:
+![Example of distorted calibration image](./assets/output_images/distorted_example.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_example.jpg)
+
 
 ## 2. Pipeline (single images)
 
@@ -70,6 +67,8 @@ Once we have a calibrated Undistorter object as described in section 1.1. we can
 ### 2.2 Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result
 
 With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
+
+
 
 <div style="content: '';clear: both;display: table;">
   <div style="float: left; width: 50%; padding: 5px;">
