@@ -39,11 +39,9 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 [/TBD]
 
-
 Input            |  Output
 :-------------------------:|:-------------------------:
 ![Example of distorted calibration image](./assets/output_images/distorted_example.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_example.jpg)
-
 
 ## 2. Pipeline (single images)
 
@@ -55,29 +53,17 @@ Once we have a calibrated Undistorter object as described in section 1.1. we can
 ...to ensure that the geometrical shape of objects is represents consistently , no matter where they appear in an image.
 [/WIP]
 
-<div style="content: '';clear: both;display: table;">
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/test_images/test5.jpg" alt="Example of distorted test image" style="width:100%" />
-  </div>
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/test5_undistorted_example.jpg" alt="Example of undistorted test image" style="width:100%" />
-  </div>
-</div>
+Input            |  Output
+:-------------------------:|:-------------------------:
+![Example of distorted test image](./assets/test_images/test5.jpg) | ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg)
 
 ### 2.2 Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result
 
 With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
 
-
-
-<div style="content: '';clear: both;display: table;">
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/test5_undistorted_example.jpg" alt="Example of undistorted test image" style="width:100%" />
-  </div>
-  <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/test5_undistorted_thresholded.jpg" alt="Example of binary image" style="width:100%" />
-  </div>
-</div>
+Input            |  Output
+:-------------------------:|:-------------------------:
+![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg)
 
 ## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
 
