@@ -39,7 +39,7 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 [/TBD]
 
-<div style="content: "";clear: both;display: table;">
+<div style="content: '';clear: both;display: table;">
   <div style="float: left; width: 50%; padding: 5px;">
     <img src="./assets/output_images/distorted_example.jpg" alt="Example of distorted calibration image" style="width:100%" />
   </div>
@@ -54,23 +54,31 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 Once we have a calibrated Undistorter object as described in section 1.1. we can simply apply the undistort method on any of our test images found from `./assets/test_images` directory.
 
+[WIP]
 ...to ensure that the geometrical shape of objects is represents consistently , no matter where they appear in an image.
+[/WIP]
 
-
-<div style="content: "";clear: both;display: table;">
+<div style="content: '';clear: both;display: table;">
   <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/test_images/test1.jpg" alt="Example of distorted test image" style="width:100%" />
+    <img src="./assets/test_images/test5.jpg" alt="Example of distorted test image" style="width:100%" />
   </div>
   <div style="float: left; width: 50%; padding: 5px;">
-    <img src="./assets/output_images/test1_undistorted_example.jpg" alt="Example of undistorted test image" style="width:100%" />
+    <img src="./assets/output_images/test5_undistorted_example.jpg" alt="Example of undistorted test image" style="width:100%" />
   </div>
 </div>
 
 ### 2.2 Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
 
-![alt text][image3]
+<div style="content: '';clear: both;display: table;">
+  <div style="float: left; width: 50%; padding: 5px;">
+    <img src="./assets/output_images/test5_undistorted_example.jpg" alt="Example of undistorted test image" style="width:100%" />
+  </div>
+  <div style="float: left; width: 50%; padding: 5px;">
+    <img src="./assets/output_images/test5_undistorted_thresholded.jpg" alt="Example of binary image" style="width:100%" />
+  </div>
+</div>
 
 ## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
 

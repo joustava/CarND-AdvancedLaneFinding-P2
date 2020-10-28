@@ -60,6 +60,6 @@ if __name__ == "__main__":
     images = list(map(lambda file: cv2.imread(file), files))
     cal = Undistorter()
     cal.calibrate(images)
-    test = cv2.imread('./assets/test_images/test1.jpg')
+    test = cv2.imread('./assets/test_images/test5.jpg')
     dst = cal.undistort(test)
-    cv2.imwrite('./assets/output_images/test1_undistorted_example.jpg', dst)
+    cv2.imwrite('./assets/output_images/test5_undistorted_example.jpg', dst)
