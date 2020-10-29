@@ -20,7 +20,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
-COPY . .
+COPY alf alf
+COPY setup.py .
+
 
 RUN cd /usr/local/lib/python3.8/site-packages && python /app/setup.py develop
 

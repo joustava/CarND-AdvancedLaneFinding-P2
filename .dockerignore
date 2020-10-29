@@ -7,3 +7,5 @@ build
 ops/**/*
 
 Pipfile*
+
+.git

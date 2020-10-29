@@ -11,7 +11,6 @@ run:
 	docker run -it \
 	  --env PYTHONDONTWRITEBYTECODE=1 \
 	  -v $(PWD)/assets:/app/assets \
-	  -v $(PWD)/:/app joustava/advanced_lane_finding \ 
-	  $(cmd)
+	  -v $(PWD)/:/app joustava/advanced_lane_finding $(cmd)
 
 .PHONY: run test build	
