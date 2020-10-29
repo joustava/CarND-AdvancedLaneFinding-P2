@@ -44,9 +44,7 @@ class Thresholder(object):
         :param: image an undistorted image
         """
         image = numpy.copy(image)
-        # TODO: check if blurring gives improvment.
-        # image = cv2.GaussianBlur(image, (5, 5), 0)
-        #   image = cv2.medianBlur(image, 5)
+
         h, l, s = self._channels(image)
 
         gradient_thresholded = self._gradientx(l, sx_thresh)
@@ -55,15 +53,15 @@ class Thresholder(object):
         color_binary = numpy.dstack(
             (numpy.zeros_like(gradient_thresholded), gradient_thresholded, color_thresholded)) * 255
 
-        color_binary[(gradient_thresholded != 0) |
-                     (color_thresholded != 0)] = 255
+        # TODO: check if blurring gives improvment.
+        # image = cv2.GaussianBlur(image, (5, 5), 0)
+        #   image = cv2.medianBlur(image, 5)
+        grayscale = cv2.cvtColor(color_binary, cv2.COLOR_BGR2GRAY)
+        kernel_size = 5
+        blurred = cv2.GaussianBlur(grayscale, (kernel_size, kernel_size), 0)
+
+        blurred[(gradient_thresholded != 0) |
+                (color_thresholded != 0)] = 255
         # color_binary[]
 
-        return color_binary  # cv2.cvtColor(color_binary, cv2.COLOR_RGB2BGR)
-
-
-if __name__ == "__main__":
-    image = cv2.imread('./assets/output_images/test5_undistorted_example.jpg')
-    thr = Thresholder()
-    mask = thr.threshold(image)
-    cv2.imwrite('./assets/output_images/test5_undistorted_thresholded.jpg', mask)
+        return blurred  # cv2.cvtColor(color_binary, cv2.COLOR_RGB2BGR)

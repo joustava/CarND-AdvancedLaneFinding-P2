@@ -52,14 +52,3 @@ class Undistorter(object):
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
             self._object_points, self._image_points, gray.shape[::-1], None, None)
         return cv2.undistort(image, mtx, dist, None, mtx)
-
-
-#
-if __name__ == "__main__":
-    files = glob.glob('./assets/camera_cal/calibration*.jpg')
-    images = list(map(lambda file: cv2.imread(file), files))
-    cal = Undistorter()
-    cal.calibrate(images)
-    test = cv2.imread('./assets/test_images/test5.jpg')
-    dst = cal.undistort(test)
-    cv2.imwrite('./assets/output_images/test5_undistorted_example.jpg', dst)

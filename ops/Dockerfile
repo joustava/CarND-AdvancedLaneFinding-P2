@@ -1,5 +1,8 @@
 FROM python:3.8
 
+ENV PYTHONPATH=/app
+
+
 RUN apt-get update ##[edited]
 RUN apt-get install \
   'ffmpeg' \
@@ -17,7 +20,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy the content of the local src directory to the working directory
-COPY src/ ./
+COPY . .
+
+RUN cd /usr/local/lib/python3.8/site-packages && python /app/setup.py develop
 
 # command to run on container start
-CMD [ "python", "./alf/classifier.py" ]
+CMD [ "python", "./alf/processor.py" ]

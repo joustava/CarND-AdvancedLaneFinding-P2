@@ -13,14 +13,16 @@ The goals / steps of this project are the following:
 * Detect lane pixels and fit to find the lane boundary.
 * Determine the curvature of the lane and vehicle position with respect to center.
 * Warp the detected lane boundaries back onto the original image.
-* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position. 
+
+A full project rubrick cn be found from the [project specification](https://review.udacity.com/#!/rubrics/1966/view) (when logged in to Udacity).
 
 ## Setup
 
-This work has been created with the help of Docker. When installed, running `make run` from the repo root directory will start the Docker container and run the pipeline. Output from the pipeline will end up into the `assets/output_images` directory. 
+This work has been created with the help of Docker in order to keep your local environment clean and for easy execution of the pipeline. When Docker is installed, running `make run` from the repo root directory will start the Docker container and run the pipeline. Output from the pipeline will end up into the `assets/output_images` directory.
 
 The images for camera calibration are stored in the folder called `assets/camera_cal`.
-The images in `assets/test_images` are for testing your pipeline on single frames.
+The images in `assets/test_images` are for testing the pipeline on single frames.
 
 ---
 
@@ -67,6 +69,12 @@ Input            |  Output
 
 ## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
 
+The perspecitve transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We could find them manually but trying to find both sets automatically seems a good usecase for resuing the previous [lane finding project]() solution.
+
+As example input to this step of the pipeline we use the output image of the previous stage: a binary thresholded image. 
+
+
+[WIP]
 ...to transform an image such that we are effectivly viewing objects from  different angle or directon.
 
 The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
