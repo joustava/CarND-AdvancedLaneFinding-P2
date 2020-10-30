@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position. 
 
-A full project rubrick cn be found from the [project specification](https://review.udacity.com/#!/rubrics/1966/view) (when logged in to Udacity).
+A full project rubrick can be found from the [project specification](https://review.udacity.com/#!/rubrics/1966/view) (when logged in to Udacity).
 
 ## Setup
 
@@ -76,7 +76,7 @@ As example input to this step of the pipeline we use the output image of the pre
 The source and destination points are created in the `Roi` class found in `alf/common/roi.py`. 
 For the source points I chose values that created a snug fit on the outsides of the lane lines when connecting them via lines. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
-| Source (x, y)       | Destination (x, y)  | 
+| Source points (x, y) in pixels | Destination points (x, y) in pixels | 
 |:-------------:|:-------------:| 
 | 560, 468      | 160, 0        | 
 | 740, 468      | 1150, 0       |
@@ -85,15 +85,15 @@ For the source points I chose values that created a snug fit on the outsides of 
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-| Input                      |  Marked (example)         | Output |
+| Input                      |  Source & Destination points (marked)         | Warped (marked) |
 |:-------------------------:|:-------------------------:|:-------------------------:|
 | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_marked.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
 
 The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesfull as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other and both slightly directed to the right as in the original picture.
 
-| Perspective Transform result|
+| Perspective Transform output|
 |:-------------------------:|
-| ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
+| ![Example of binary image](./assets/output_images/test5_undistorted_warped.jpg) |
 
 ### 2.4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
