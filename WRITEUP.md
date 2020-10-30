@@ -69,41 +69,25 @@ Input            |  Output
 
 ## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
 
-The perspecitve transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We could find them manually but trying to find both sets automatically seems a good usecase for resuing the previous [lane finding project]() solution.
+The perspective transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We will find them manually for now but trying to find both sets automatically seems a good usecase for reusing the results from [lane finding project]().
 
 As example input to this step of the pipeline we use the output image of the previous stage: a binary thresholded image. 
 
-
-[WIP]
-...to transform an image such that we are effectivly viewing objects from  different angle or directon.
-
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
-
-This resulted in the following source and destination points:
+The source and destination points are created in the `Roi` class found in `alf/common/roi.py`. 
+For the source points I chose values that created a snug fit on the outsides of the lane lines when connecting them via lines. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+| 560, 468      | 160, 0        | 
+| 740, 468      | 1150, 0       |
+| 1150, 720     | 1150, 720     |
+| 160, 720      | 160, 720      |
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+Input                      |  Marked (example)         | Output
+:-------------------------:|:-------------------------:|:-------------------------:
+| ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_marked.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped.jpg) |
 
 ### 2.4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
@@ -136,6 +120,8 @@ Here's a [link to my video result](./project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+
+- Road inclination
 
 
 ## Sources

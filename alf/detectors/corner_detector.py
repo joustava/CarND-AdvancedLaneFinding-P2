@@ -12,7 +12,7 @@ class CornerDetector(object):
         """
         self._number = n
 
-    def _draw_lines(self, image, lines, color=[255, 0, 0], thickness=2):
+    def _draw_lines(self, image, lines, color=[255, 0, 0], thickness=1):
         """
         Renders lines upon the image.
         """
@@ -34,23 +34,25 @@ class CornerDetector(object):
         min_line_len = 15  # minimum number of pixels to concider as line
         # maximum pixel space between connectable line segments.
         max_line_gap = 1
+        # print(binary.shape)
 
-        height, width = binary.shape
+        gray = cv2.cvtColor(binary, cv2.COLOR_BGR2GRAY)
 
-        lines = cv2.HoughLinesP(binary, rho, theta, threshold, numpy.array(
+        height, width, _ = binary.shape
+
+        lines = cv2.HoughLinesP(gray, rho, theta, threshold, numpy.array(
             []), minLineLength=min_line_len, maxLineGap=max_line_gap)
-
         markers = Lane.extrapolate(lines, width, height)
         self._draw_lines(binary, [markers])
 
-        # corners = Lane.extrapolate(lines, width, height)
+        corners = Lane.extrapolate(lines, width, height)
 
         # # corners = cv2.goodFeaturesToTrack(binary, self._number, 0.01, 10)
         # # print(corners)
         # # corners = numpy.int0(corners)
         # # corners = sorted(numpy.concatenate(corners).tolist())
 
-        # for corner in corners:
-        #     cv2.circle(binary, corner, 5, color=(0, 0, 250), thickness=-1)
+        for corner in corners:
+            cv2.circle(binary, corner, 2, color=(0, 0, 250), thickness=-1)
 
         return binary

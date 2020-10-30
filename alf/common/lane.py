@@ -3,7 +3,8 @@ from .line import Line
 
 
 class Lane(object):
-    def extrapolate(self, lines, width, height):
+    @staticmethod
+    def extrapolate(lines, width, height):
         """
         Extrapolating the left and right road marker (Hough) data
         """
