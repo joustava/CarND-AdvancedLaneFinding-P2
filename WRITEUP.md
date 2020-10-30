@@ -41,9 +41,9 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
 [/TBD]
 
-Input            |  Output
-:-------------------------:|:-------------------------:
-![Example of distorted calibration image](./assets/output_images/distorted_example.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_example.jpg)
+| Input            |  Output |
+|:-------------------------:|:-------------------------:|
+|![Example of distorted calibration image](./assets/output_images/distorted_example.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_example.jpg) |
 
 ## 2. Pipeline (single images)
 
@@ -55,17 +55,17 @@ Once we have a calibrated Undistorter object as described in section 1.1. we can
 ...to ensure that the geometrical shape of objects is represents consistently , no matter where they appear in an image.
 [/WIP]
 
-Input            |  Output
-:-------------------------:|:-------------------------:
-![Example of distorted test image](./assets/test_images/test5.jpg) | ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg)
+|Input            |  Output |
+|:-------------------------:|:-------------------------:|
+| ![Example of distorted test image](./assets/test_images/test5.jpg) | ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) |
 
 ### 2.2 Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result
 
 With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
 
-Input            |  Output
+| Input            |  Output |
 :-------------------------:|:-------------------------:
-![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg)
+![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) |
 
 ## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
 
@@ -76,7 +76,7 @@ As example input to this step of the pipeline we use the output image of the pre
 The source and destination points are created in the `Roi` class found in `alf/common/roi.py`. 
 For the source points I chose values that created a snug fit on the outsides of the lane lines when connecting them via lines. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
-| Source        | Destination   | 
+| Source (x, y)       | Destination (x, y)  | 
 |:-------------:|:-------------:| 
 | 560, 468      | 160, 0        | 
 | 740, 468      | 1150, 0       |
@@ -85,9 +85,15 @@ For the source points I chose values that created a snug fit on the outsides of 
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-Input                      |  Marked (example)         | Output
-:-------------------------:|:-------------------------:|:-------------------------:
-| ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_marked.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped.jpg) |
+| Input                      |  Marked (example)         | Output |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_marked.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
+
+The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesfull as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other and both slightly directed to the right as in the original picture.
+
+| Perspective Transform result|
+|:-------------------------:|
+| ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
 
 ### 2.4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
