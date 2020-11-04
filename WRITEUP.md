@@ -47,7 +47,7 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 ## 2. Pipeline (single images)
 
-### 2.1 Provide an example of a distortion-corrected image
+### 2.1 Distortion correction
 
 Once we have a calibrated Undistorter object as described in section 1.1. we can simply apply the undistort method on any of our test images found from `./assets/test_images` directory.
 
@@ -59,7 +59,7 @@ Once we have a calibrated Undistorter object as described in section 1.1. we can
 |:-------------------------:|:-------------------------:|
 | ![Example of distorted test image](./assets/test_images/test5.jpg) | ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) |
 
-### 2.2 Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result
+### 2.2 Binary Threshold
 
 With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
 
@@ -67,7 +67,7 @@ With a `Thresholder` object created from its class found in `./src/alf/pipeline/
 :-------------------------:|:-------------------------:
 ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) |
 
-## 2.3 Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image
+## 2.3 Perspective Transform
 
 The perspective transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We will find them manually for now but trying to find both sets automatically seems a good usecase for reusing the results from [lane finding project]().
 
@@ -77,8 +77,8 @@ The source and destination points are created in the `Roi` class found in `alf/c
 For the source points I chose values that created a snug fit on the outsides of the lane lines when connecting them via lines. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
 | Source points (x, y) in pixels | Destination points (x, y) in pixels | 
-|:-------------:|:-------------:| 
-| 560, 468      | 160, 0        | 
+|:-------------:|:-------------:|
+| 560, 468      | 160, 0        |
 | 740, 468      | 1150, 0       |
 | 1150, 720     | 1150, 720     |
 | 160, 720      | 160, 720      |
@@ -95,17 +95,17 @@ The images contain the points and lines for illustrative purposed, they will not
 |:-------------------------:|
 | ![Example of binary image](./assets/output_images/test5_undistorted_warped.jpg) |
 
-### 2.4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+### 2.4. Polynomial fitting of lane lines
 
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
 ![alt text][image5]
 
-### 2.5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+### 2.5. Radius of curvature of the lane and vehicle position with respect to center
 
 I did this in lines # through # in my code in `my_other_file.py`
 
-### 2.6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
+### 2.6. Lane area visualization
 
 I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
 
@@ -133,3 +133,5 @@ Here I'll talk about the approach I took, what techniques I used, what worked an
 ## Sources
 
 * [Original project repository](https://github.com/udacity/CarND-Advanced-Lane-Lines)
+* [Homography in CV](https://en.wikipedia.org/wiki/Homography_(computer_vision))
+* [Road surface marking](https://en.wikipedia.org/wiki/Road_surface_marking)

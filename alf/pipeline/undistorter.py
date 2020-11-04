@@ -10,7 +10,7 @@ class Undistorter(object):
 
     Before undistorting an image with `undistort()` an Undistorter object needs to be calibrated
     with the help of a set of checkerboard images passed to `calibrate()`. These images need to be created
-    with the same camera and lens combination. 
+    with the same camera and lens combination as the actual images you'd like to process.
     """
 
     def __init__(self, nx=9, ny=6):

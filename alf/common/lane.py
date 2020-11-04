@@ -1,6 +1,8 @@
 import numpy
 from .line import Line
 
+# DEPRECATED?
+
 
 class Lane(object):
     @staticmethod
