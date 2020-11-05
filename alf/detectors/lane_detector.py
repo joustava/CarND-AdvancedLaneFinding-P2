@@ -97,8 +97,10 @@ class LaneDetector(object):
             (right_fitx.astype(np.int32), ploty.astype(np.int32)))
 
         cv2.polylines(out_img, [left_curve],
-                      isClosed=False, color=(0, 255, 0), thickness=5)
+                      isClosed=False, color=(0, 0, 255), thickness=25)
         cv2.polylines(out_img, [right_curve], isClosed=False,
-                      color=(0, 255, 0), thickness=5)
+                      color=(0, 0, 250), thickness=25)
+
+        # cv2.fillPoly(out_img, points, 200)
 
         return out_img, left_curve, right_curve

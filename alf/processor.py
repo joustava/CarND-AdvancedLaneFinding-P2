@@ -16,7 +16,7 @@ def create_canvas(image):
     return numpy.zeros((image.shape[0], image.shape[1], 3), dtype=numpy.uint8)
 
 
-def weighted_img(binary_image, original_image, α=0.8, β=1., γ=0.):
+def weighted_img(binary_image, original_image, α=0.75, β=1., γ=0.):
     """
 
     """
@@ -61,14 +61,20 @@ def frame_pipeline(distortion_corrector):
         warped_image_windowed, left_curve, right_curve = detector.fit_polynomial(
             warped_image)
 
-        # 6. Plot lines and radius of curvature of the lane and the position of the vehicle
+        # 6. Unwarp image
+        unwarped_image = warper.unwarp(warped_image_windowed)
+
+        # 7. Plot lines and radius of curvature of the lane and the position of the vehicle
         # with respect to center. We need to make and inverse transform of the lines found in 5.
         # and plot / superimpose them on the original image. The radius and vehicle center can
         # redered as text
-        unwarped_image = warper.unwarp(warped_image_windowed)
 
-        # 7. Plot results
+        # 8. Plot results
         overlayed = weighted_img(unwarped_image, frame)
+
+        height, width = overlayed.shape[:2]
+        cv2.line(overlayed, (width//2, height),
+                 (width//2, height-20), (255, 255, 0), 3)
 
         # Save examples
         if snapshot:
