@@ -28,8 +28,8 @@ class Roi(object):
         src = Roi.src_corners(width, height)
 
         points = numpy.float32(src)
-        points[0] = [src[3][0], 0]
-        points[1] = [src[2][0], 0]
+        points[0] = [src[3, 0], 0]
+        points[1] = [src[2, 0], 0]
         points[2] = src[2]
         points[3] = src[3]
 

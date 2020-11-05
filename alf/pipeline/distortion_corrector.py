@@ -1,10 +1,8 @@
-import glob
-import os
 import numpy as np
 import cv2
 
 
-class Undistorter(object):
+class DistortionCorrector(object):
     """
     Removes lens distortion from images.
 
@@ -48,7 +46,8 @@ class Undistorter(object):
         Removes the distortion from images made with the same camera and lens combination used in the
         calibration step.
         """
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        height = image.shape[0]
+        width = image.shape[1]
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
-            self._object_points, self._image_points, gray.shape[::-1], None, None)
+            self._object_points, self._image_points, (height, width), None, None)
         return cv2.undistort(image, mtx, dist, None, mtx)

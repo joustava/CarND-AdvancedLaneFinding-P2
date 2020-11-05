@@ -17,6 +17,9 @@ build:
 notebook:
 	docker run --rm -v $(PWD)/assets:/home/jovyan/work/assets -p 8888:8888 jupyter/scipy-notebook
 
+profile:
+	scalene alf/processor.py --profile-all --html --outfile profiling.html
+
 run:
 	export DISPLAY='127.0.0.1:0.0'
 	xhost + 127.0.0.1

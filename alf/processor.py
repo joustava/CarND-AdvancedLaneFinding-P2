@@ -1,10 +1,12 @@
 import cv2
+import os
 import glob
-from pipeline.undistorter import Undistorter
-from pipeline.thresholder import Thresholder
-from pipeline.transformer import Transformer
+from pipeline.distortion_corrector import DistortionCorrector
+from pipeline.image_thresholder import ImageThresholder
+from pipeline.perspective_transformer import PerspectiveTransformer
 from detectors.lane_detector import LaneDetector
 import numpy
+import time
 
 
 def create_canvas(image):
@@ -21,94 +23,72 @@ def weighted_img(binary_image, original_image, α=0.8, β=1., γ=0.):
     return cv2.addWeighted(original_image, α, binary_image, β, γ)
 
 
-def calibrate():
-    # 1. CALIBRATION STEP
+def calibrate(image_folder="./assets/camera_cal"):
+    """
+    Returns a calibrated DistortionCorrector object
+    """
+    # calibration_file_name = glob.glob('./assets/camera_cal/calibration*.jpg')
 
-    # Get all calibration file names
-    calibration_file_name = glob.glob('./assets/camera_cal/calibration*.jpg')
+    calibration_images = []
+    for filename in os.listdir(image_folder):
+        img = cv2.imread(os.path.join(image_folder, filename))
+        if img is not None:
+            calibration_images.append(img)
 
-    # Load all calibration images
-    calibration_images = list(
-        map(lambda file: cv2.imread(file), calibration_file_name))
-
-    # Create and calibrate an undistorter
-    undistorter = Undistorter()
-    undistorter.calibrate(calibration_images)
-    return undistorter
+    corrector = DistortionCorrector()
+    corrector.calibrate(calibration_images)
+    return corrector
 
 
-def frame_pipeline(undistorter, snapshot=False):
-    def process(frame):
+thresholder = ImageThresholder()
+warper = PerspectiveTransformer(cv2.imread('./assets/test_images/test1.jpg'))
+detector = LaneDetector()
+
+
+def frame_pipeline(distortion_corrector):
+    def process(frame, snapshot=False):
+        tic = time.perf_counter()
         # 2. UNDISTORTION STEP
-        # step2_source = cv2.imread('./assets/test_images/test5.jpg')
-        undistorted_image = undistorter.undistort(frame)
-        # Save example
-        if snapshot:
-            cv2.imwrite(
-                './assets/output_images/undistorted_example.jpg', undistorted_image)
+        distortion_corrected_image = distortion_corrector.undistort(frame)
 
         # 3. BINARY IMAGE THRESHOLD STEP
-        # step3_source = cv2.imread(
-        #     './assets/output_images/undistorted_example.jpg')
-        thresholder = Thresholder()
-        thresholded_image = thresholder.threshold(undistorted_image)
+        thresholded_image = thresholder.threshold(distortion_corrected_image)
 
-        if snapshot:
-            cv2.imwrite(
-                './assets/output_images/undistorted_thresholded.jpg', thresholded_image)
-
-        # # 4. PERSPECTIVE TRANSORMATION
-        # step4_src = cv2.imread(
-        #     './assets/output_images/undistorted_thresholded.jpg')
-        tr = Transformer()
-        warped_image, Minv = tr.warp(thresholded_image)
-
-        if snapshot:
-            cv2.imwrite(
-                './assets/output_images/undistorted_warped.jpg', warped_image)
+        # 4. PERSPECTIVE TRANSORMATION
+        warped_image = warper.warp(thresholded_image)
 
         # 5. Finding Lane Lines
-
-        # [WIP]
-        # FFS: grayscale!
-        warped_image = cv2.imread(
-            './assets/output_images/undistorted_warped.jpg', 0)
-
-        # warped_image = cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY)
-
-        detector = LaneDetector()
         warped_image_windowed, left_curve, right_curve = detector.fit_polynomial(
             warped_image)
-
-        if snapshot:
-            cv2.imwrite(
-                './assets/output_images/undistorted_warped_windowed.jpg', warped_image_windowed)
 
         # 6. Plot lines and radius of curvature of the lane and the position of the vehicle
         # with respect to center. We need to make and inverse transform of the lines found in 5.
         # and plot / superimpose them on the original image. The radius and vehicle center can
-        # redered as text.
+        # redered as text
+        unwarped_image = warper.unwarp(warped_image_windowed)
 
-        unwarped_image = cv2.warpPerspective(warped_image_windowed, Minv, (warped_image_windowed.shape[1], warped_image_windowed.shape[0]),
-                                             flags=cv2.INTER_LINEAR)
-        if snapshot:
-            cv2.imwrite(
-                './assets/output_images/undistorted_unwarped_windowed.jpg', unwarped_image)
-
-        # original = cv2.imread('./assets/test_images/test5.jpg')
-
+        # 7. Plot results
         overlayed = weighted_img(unwarped_image, frame)
 
+        # Save examples
         if snapshot:
+            cv2.imwrite(
+                './assets/output_images/distortion_corrected_image.jpg', distortion_corrected_image)
+            cv2.imwrite(
+                './assets/output_images/undistorted_thresholded.jpg', thresholded_image)
+            cv2.imwrite(
+                './assets/output_images/undistorted_warped.jpg', warped_image)
+            cv2.imwrite(
+                './assets/output_images/undistorted_warped_windowed.jpg', warped_image_windowed)
+            cv2.imwrite(
+                './assets/output_images/undistorted_unwarped_windowed.jpg', unwarped_image)
             cv2.imwrite(
                 './assets/output_images/overlayed.jpg', overlayed)
 
+        toc = time.perf_counter()
+        print(f"Handling one frame took approx: {toc - tic:0.4f} seconds")
         return overlayed
     return process
-
-
-pipeline = frame_pipeline(calibrate())
-# pipeline(cv2.imread('./assets/test_images/test5.jpg'), snapshot=True)
 
 
 def process_video():
@@ -133,3 +113,7 @@ def process_video():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+
+
+pipeline = frame_pipeline(calibrate())
+pipeline(cv2.imread('./assets/test_images/test1.jpg'), snapshot=True)
