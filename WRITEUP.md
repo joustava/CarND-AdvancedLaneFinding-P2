@@ -35,7 +35,7 @@ Once all the calibration data is collected, an image can be undistorted by using
 
 | Input            |  Output |
 |:-------------------------:|:-------------------------:|
-|![Example of distorted calibration image](./assets/camer_cal/calibration2.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_checkerboard.jpg) |
+|![Example of distorted calibration image](./assets/camera_cal/calibration2.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_checkerboard.jpg) |
 
 ## 2. Pipeline (single images)
 
