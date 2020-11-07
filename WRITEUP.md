@@ -52,9 +52,12 @@ As the calibration step can take some time, we should make sure the `DistortionC
 ### 2.2 Binary Threshold
 
 With a `ImageThresholder` object, created from its class found in `./src/alf/pipeline/thresholder.py`, both color and gradient thresholds are applied to an image in the `threshold()` function. This function combines the threshold results as a binary image. The table below shows input, gradient thresholded, color thresholded and both threshold combined.
-| Input                     | gradient                  | color | combined |
-|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
+| Input                     | gradient                  |
+|:-------------------------:|:-------------------------:|
 | ![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) | ![Example of gradient thresholded image](./assets/output_images/gradient_thresholded_frame.jpg) |
+
+| color | combined |
+|:-------------------------:|:-------------------------:|
 | ![Example of color thresholded image](./assets/output_images/color_thresholded_frame.jpg) | ![Example of combined threshold image](./assets/output_images/thresholded_frame.jpg) |
 
 ## 2.3 Perspective Transform
