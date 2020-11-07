@@ -28,18 +28,10 @@ The images in `assets/test_images` are for testing the pipeline on single frames
 
 ## 1. Camera Calibration
 
-### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
+The code for this step is contained in the class `DistortionCorrector` found in `alf/pipeline/distortion_corrector.py`.  
+Before using the DistortionCorrector it needs to be calibrated by passing a set of images to its `calibrate` method. For each valid calibration image, its corners are found and stored to a collection. At the same time a collection is updated with the point indexes.
 
-The code for this step is contained in the class `Undistorter` found in `src/alf/calibration/undistorter.py`.  
-
-[TBD]
-
-.. To compute the transformation between 3d objects in the world and 2d image points.
-
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
-
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
-[/TBD]
+Once all the calibration data is collected, an image can be undistorted by using the `undistort` method form the same `DistortionCorrector` object. An example is shown in the table below:
 
 | Input            |  Output |
 |:-------------------------:|:-------------------------:|
@@ -49,34 +41,30 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 ### 2.1 Distortion correction
 
-Once we have a calibrated Undistorter object as described in section 1.1. we can simply apply the undistort method on any of our test images found from `./assets/test_images` directory.
-
-[WIP]
-...to ensure that the geometrical shape of objects is represents consistently , no matter where they appear in an image.
-[/WIP]
+Once we have a calibrated DistortionCorrector object as described in section 1.1. we can simply apply the undistort method on any of our test images found from the `./assets/test_images` directory. The effect can be seen from the table below.
 
 |Input            |  Output |
 |:-------------------------:|:-------------------------:|
-| ![Example of distorted test image](./assets/test_images/test5.jpg) | ![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) |
+| ![Example of distorted test image](./assets/output_images/original_frame.jpg) | ![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) |
+
+As the calibration step can take some time, we should make sure the `DistortionCorrector` is `calibrated` only once during the pipeline processing. 
 
 ### 2.2 Binary Threshold
 
-With a `Thresholder` object created from its class found in `./src/alf/pipeline/thresholder.py` both color and gradient thresholds are applied to an image in the `threshols()` function. This function combines the threshold results as a binary image.
+With a `ImageThresholder` object, created from its class found in `./src/alf/pipeline/thresholder.py`, both color and gradient thresholds are applied to an image in the `threshold()` function. This function combines the threshold results as a binary image. The table below shows input, gradient thresholded, color thresholded and both threshold combined.
 
-| Input            |  Output |
 :-------------------------:|:-------------------------:
-![Example of undistorted test image](./assets/output_images/test5_undistorted_example.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) |
+![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) | ![Example of gradient thresholded image](./assets/output_images/gradient_thresholded_frame.jpg) |
+![Example of color thresholded image](./assets/output_images/color_thresholded_frame.jpg) | ![Example of combined threshold image](./assets/output_images/thresholded_frame.jpg) |
 
 ## 2.3 Perspective Transform
 
-The perspective transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We will find them manually for now but trying to find both sets automatically seems a good usecase for reusing the results from [lane finding project]().
-
-As example input to this step of the pipeline we use the output image of the previous stage: a binary thresholded image. 
+The perspective transform requires the knowledge of a set of source points which then are mapped onto desired destination points. We will find them manually for now but trying to find both sets automatically seems a good usecase for reusing code from [lane finding project]().
 
 The source and destination points are created in the `Roi` class found in `alf/common/roi.py`. 
-For the source points I chose values that created a snug fit on the outsides of the lane lines when connecting them via lines. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
+For the source points I chose values that created a snug fit on the outsides of the lane when plotted on the `.assets/test_images/straight_lines2` image. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
-| Source points (x, y) in pixels | Destination points (x, y) in pixels | 
+| SRC points | DST points | 
 |:-------------:|:-------------:|
 | 560, 468      | 160, 0        |
 | 740, 468      | 1150, 0       |
@@ -87,9 +75,9 @@ I verified that my perspective transform was working as expected by drawing the 
 
 | Input                      |  Source & Destination points (marked)         | Warped (marked) |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Example of binary image](./assets/output_images/test5_undistorted_thresholded.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_marked.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
+| ![Example of selection image](./assets/test_images/straight_lines2.jpg) | ![Example of source points selection image](./assets/output_images/src_point_frame.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
 
-The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesfull as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other and both slightly directed to the right as in the original picture.
+The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesful as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other as in the original picture.
 
 | Perspective Transform output|
 |:-------------------------:|

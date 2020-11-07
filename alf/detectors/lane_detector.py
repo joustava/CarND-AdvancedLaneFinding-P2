@@ -1,21 +1,23 @@
 import numpy as np
 import cv2
-from .line_tracker import LineTracker
+from .line_tracker import PixelTracker
+from common.line import Line
 
 # Based on 'Lesson 8: Advanced Computer Vision - 4. Finding the Lines: Sliding Window
 
 
 class LaneDetector(object):
     def __init__(self):
-        self.nwindows = 9
+        self.nwindows = 15
+        self.LEFT = Line()
+        self.RIGHT = Line()
 
-    def find_lane_base(self, binary_warped):
+    def _find_lane_base(self, binary_warped):
         """
         Find the base x axis value of the left and right lane markings
         by applying a Histogram over the y direction of the bottom half
         of a binary and warped image.
         """
-
         histogram = np.sum(
             binary_warped[binary_warped.shape[0]//2:, :], axis=0)
 
@@ -25,82 +27,105 @@ class LaneDetector(object):
 
         return (left_line_x, right_line_x)
 
-    def curve(y, polyfit, ym_per_pix=1):
-        return ((1 + (2*polyfit[0]*y*ym_per_pix + polyfit[1])**2)**1.5) / np.absolute(2*polyfit[0])
+    def _polynomial(self, polyfit, y):
+        A, B, C = polyfit
+        return A * y ** 2 + B * y + C
 
-    def find_lane_lines(self, image):
+    def radius(self, y, polyfit, ym_per_pix=1.0):
         """
-        Image binary
+        With the coefficients we found by fitting the polynomial we can find the xs
+        """
+        A, B = polyfit[:2]
+        return ((1 + (2 * A * y * ym_per_pix + B) ** 2) ** 1.5) / np.absolute(2 * A)
+
+    def fill_lane(self, image, leftx, rightx, ploty):
+        """
+        Fills area between two lines.
+        From: Tips and tricks for the Project
+        """
+        window = np.zeros_like(image)
+        pts_left = np.array([np.transpose(np.vstack([leftx, ploty]))])
+        pts_right = np.array(
+            [np.flipud(np.transpose(np.vstack([rightx, ploty])))])
+        pts = np.hstack((pts_left, pts_right))
+
+        # Draw the lane onto the warped blank image
+        cv2.fillPoly(window, np.int_([pts]), (0, 255, 0))
+        return cv2.addWeighted(image, 1, window, 0.3, 0)
+
+    def track_lines(self, image):
+        """
+        On on image binary we apply a windowed search from the bottom of
+        the screen for both left and right lane lines.
         """
         out_img = np.dstack((image, image, image))
-        out_img[:, :] = [0, 0, 0]
 
-        # Set height of windows - based on nwindows above and image shape
-        height = np.int(image.shape[0]//self.nwindows)
+        if self.LEFT.detected and self.RIGHT.detected:
+            pass
+        else:
+            # Set height of windows - based on nwindows above and image shape
+            height = np.int(image.shape[0]//self.nwindows)
 
-        # Current positions to be updated later for each window in nwindows
-        left_line_x, right_line_x = self.find_lane_base(image)
+            # Current positions to be updated later for each window in nwindows
+            left_line_x, right_line_x = self._find_lane_base(image)
 
-        # Initialize sliding windows to track both left and right lane markers
-        left_window = LineTracker(image,
-                                  center_x=left_line_x, top_y=height * self.nwindows - height, height=height)
-        right_window = LineTracker(image,
-                                   center_x=right_line_x, top_y=height * self.nwindows - height, height=height)
+            # Initialize sliding windows to track both left and right lane markers
+            left_window = PixelTracker(out_img,
+                                       center_x=left_line_x, height=height)
+            right_window = PixelTracker(out_img,
+                                        center_x=right_line_x, height=height)
 
-        # Create an output image to draw on and visualize the result
-        # Step through the windows one by one and update left and right lane marker trackers
-        for window in range(self.nwindows):
-            # Track line with current window
-            left_window.track(window)
-            right_window.track(window)
+            left_window.track(self.nwindows)
+            right_window.track(self.nwindows)
 
-            # Visualize results
-            # left_window.draw(out_img)
-            # right_window.draw(out_img)
+            # Extract left and right line pixel positions
+            self.LEFT.current_fit = left_fit = left_window.good_pixels()
+            self.RIGHT.current_fit = right_fit = right_window.good_pixels()
+            return left_fit, right_fit, out_img
 
-        # Extract left and right line pixel positions
-        leftx, lefty = left_window.good_pixels()
-        rightx, righty = right_window.good_pixels()
-        return leftx, lefty, rightx, righty, out_img
+    def detect(self, binary):
+        """
+        Detects and plots the lane line marking.
+        """
+        # The lane will be visualized on this canvas
+        lane_image = np.dstack((binary, binary, binary))
+        lane_image[:, :] = [0, 0, 0]
 
-    def fit_polynomial(self, binary_warped):
+        # Generate y values over the whole height range.
+        ploty = np.linspace(0, binary.shape[0]-1, binary.shape[0])
 
-        leftx, lefty, rightx, righty, out_img = self.find_lane_lines(
-            binary_warped)
+        # Calculate polyfits for both lines
+        left_fit, right_fit, annotated_image = self.track_lines(binary)
 
-        # Fit a second order polynomial to each using `np.polyfit`
-        left_fit = np.polyfit(lefty, leftx, 2)
-        right_fit = np.polyfit(righty, rightx, 2)
-
-        # Generate x and y values for plotting
-        ploty = np.linspace(
-            0, binary_warped.shape[0]-1, binary_warped.shape[0])
         try:
-            left_fitx = left_fit[0]*ploty**2 + left_fit[1]*ploty + left_fit[2]
-            right_fitx = right_fit[0]*ploty**2 + \
-                right_fit[1]*ploty + right_fit[2]
+            # Calculate x values
+            left_fitx = self._polynomial(left_fit, ploty)
+            right_fitx = self._polynomial(right_fit, ploty)
         except TypeError:
             # Avoids an error if `left` and `right_fit` are still none or incorrect
             print('The function failed to fit a line!')
-            left_fitx = 1*ploty**2 + 1*ploty
-            right_fitx = 1*ploty**2 + 1*ploty
+            left_fitx = 1 * ploty**2 + 1 * ploty
+            right_fitx = 1*ploty**2 + 1 * ploty
 
-        # Visualization ##
-        # Colors in the left and right lane regions
-        # out_img[lefty, leftx] = [255, 0, 0]
-        # out_img[righty, rightx] = [0, 0, 255]
-
-        # Plots the left and right polynomials on the lane lines
         left_curve = np.column_stack(
             (left_fitx.astype(np.int32), ploty.astype(np.int32)))
         right_curve = np.column_stack(
             (right_fitx.astype(np.int32), ploty.astype(np.int32)))
 
-        cv2.polylines(out_img, [left_curve],
-                      isClosed=False, color=(0, 0, 255), thickness=25)
-        cv2.polylines(out_img, [right_curve], isClosed=False,
-                      color=(0, 0, 250), thickness=25)
+        cv2.polylines(lane_image, [left_curve],
+                      isClosed=False, color=(0, 255, 255), thickness=25)
+        cv2.polylines(lane_image, [right_curve], isClosed=False,
+                      color=(0, 255, 250), thickness=25)
 
-        # cv2.fillPoly(out_img, points, 200)
+        cv2.polylines(annotated_image, [left_curve],
+                      isClosed=False, color=(0, 255, 255), thickness=3)
+        cv2.polylines(annotated_image, [right_curve], isClosed=False,
+                      color=(0, 255, 255), thickness=3)
 
-        return out_img, left_curve, right_curve
+        lane_image = self.fill_lane(lane_image, left_fitx, right_fitx, ploty)
+
+        y = np.max(ploty)
+        rl = self.radius(y, left_fit)
+        rr = self.radius(y, right_fit)
+
+        return lane_image, annotated_image, left_curve, right_curve, rl, rr

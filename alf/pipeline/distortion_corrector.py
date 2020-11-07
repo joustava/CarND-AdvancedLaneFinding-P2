@@ -30,16 +30,9 @@ class DistortionCorrector(object):
             ret, corners = cv2.findChessboardCorners(
                 gray, (self._nx, self._ny), None)
 
-            # If found, draw corners
             if ret == True:
                 self._image_points.append(corners)
                 self._object_points.append(self._objs)
-                # Draw and the corners and save file
-                # cv2.drawChessboardCorners(
-                #     image, (self._nx, self._ny), corners, ret)
-
-                # cv2.imwrite(
-                #     './assets/output_images/chessboard%s.jpg' % idx, image)
 
     def undistort(self, image):
         """

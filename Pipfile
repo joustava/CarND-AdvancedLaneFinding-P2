@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 green = "3.2.3"
+pylint = "*"
+autopep8 = "*"
 
 [packages]
 numpy = "1.19.0"

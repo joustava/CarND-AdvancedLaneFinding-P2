@@ -1,5 +1,5 @@
 # Define a class to receive the characteristics of each line detection
-import numpy
+import numpy as np
 
 
 class Line():
@@ -13,31 +13,49 @@ class Line():
         # polynomial coefficients averaged over the last n iterations
         self.best_fit = None
         # polynomial coefficients for the most recent fit
-        self.current_fit = [numpy.array([False])]
+        self.current_fit = [np.array([False])]
         # radius of curvature of the line in some units
         self.radius_of_curvature = None
         # distance in meters of vehicle center from the line
         self.line_base_pos = None
         # difference in fit coefficients between last and new fits
-        self.diffs = numpy.array([0, 0, 0], dtype='float')
+        self.diffs = np.array([0, 0, 0], dtype='float')
         # x values for detected line pixels
         self.allx = None
         # y values for detected line pixels
         self.ally = None
+        self._nonzeroy = None
+        self._nonzerox = None
 
-    @staticmethod
-    def extrapolate(center, slope, height, k=0.6):
-        """
-        Calculate the desired start and end points from a given center point and slope with linear equation:
+    def search_around(self, image, margin=50):
+        nonzero = image.nonzero()
+        self._nonzeroy = np.array(nonzero[0])
+        self._nonzerox = np.array(nonzero[1])
 
-            y = mx + b
+        indices = self.indices()
 
-        Height is y axis maximum, k a scaling constant to be able to control where the line stops.
-        """
-        x, y = center
-        b = y - slope * x
+        self.allx = self._nonzerox[indices]
+        self.ally = self._nonzeroy[indices]
 
-        x1 = (height - b) / slope
-        x2 = (height * k - b) / slope
+        self.draw(image)
+        return np.polyfit(self.ally, self.allx, 2)
 
-        return [x1, height, x2, height * k]
+    def indices(self):
+        A, B, C = self.current_fit
+        y = self._nonzeroy
+        x = self._nonzerox
+        margin = 50
+        return ((x > (A*(y**2) + B*y + C - margin)) & (x < (A*(y**2) + B*y + C + margin)))
+
+    def draw(self, image):
+        # Generate y values over the whole height range.
+        ploty = np.linspace(0, image.shape[0]-1, image.shape[0])
+        window = np.zeros_like(image)
+        pts_left = np.array([np.transpose(np.vstack([self.allx, ploty]))])
+        pts_right = np.array(
+            [np.flipud(np.transpose(np.vstack([self.ally, ploty])))])
+        pts = np.hstack((pts_left, pts_right))
+
+        # Draw the lane onto the warped blank image
+        cv2.fillPoly(window, np.int_([pts]), (0, 255, 0))
+        return cv2.addWeighted(image, 1, window, 0.3, 0)

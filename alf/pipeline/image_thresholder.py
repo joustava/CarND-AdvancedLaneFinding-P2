@@ -1,5 +1,6 @@
 import cv2
 import numpy
+from common.roi import Roi
 
 
 class ImageThresholder(object):
@@ -21,7 +22,6 @@ class ImageThresholder(object):
         binary[(channel >= threshold[0]) & (channel <= threshold[1])] = 1
         return binary
 
-        # Stack each channel
     def _apply_gradient_threshold(self, channel, threshold):
         """
 
@@ -38,7 +38,7 @@ class ImageThresholder(object):
 
         return thresholded
 
-    def threshold(self, image, s_thresh=(170, 255), sx_thresh=(20, 100)):
+    def threshold(self, image, s_thresh=(90, 255), sx_thresh=(20, 100)):
         """
         Apply color and gradient thresholding on an image.
 
@@ -50,16 +50,14 @@ class ImageThresholder(object):
             l, sx_thresh)
         color_thresholded_image = self._apply_color_threshold(s, s_thresh)
 
-        # Stack BGR values
-        # R channel is all 0
-        # B channel is all 255
-        # G channel is all 255
         color_binary = numpy.dstack(
-            (numpy.zeros_like(gradient_thresholded_image), gradient_thresholded_image, color_thresholded_image)) * 255
+            (color_thresholded_image, gradient_thresholded_image, numpy.zeros_like(gradient_thresholded_image))) * 255
 
         # From grayscaled color input create a binary image where colored pixels in the color binary are set to white.
         grayscale = cv2.cvtColor(color_binary, cv2.COLOR_BGR2GRAY)
         grayscale[(gradient_thresholded_image != 0) |
                   (color_thresholded_image != 0)] = 255
 
-        return grayscale
+        grayscale = cv2.GaussianBlur(grayscale, (7, 7), 0)
+
+        return grayscale, color_binary, gradient_thresholded_image, color_thresholded_image
