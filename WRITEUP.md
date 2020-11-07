@@ -35,7 +35,7 @@ Once all the calibration data is collected, an image can be undistorted by using
 
 | Input            |  Output |
 |:-------------------------:|:-------------------------:|
-|![Example of distorted calibration image](./assets/output_images/distorted_example.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_example.jpg) |
+|![Example of distorted calibration image](./assets/camer_cal/calibration2.jpg) | ![Example of undistorted calibration image](./assets/output_images/undistorted_checkerboard.jpg) |
 
 ## 2. Pipeline (single images)
 
@@ -43,7 +43,7 @@ Once all the calibration data is collected, an image can be undistorted by using
 
 Once we have a calibrated DistortionCorrector object as described in section 1.1. we can simply apply the undistort method on any of our test images found from the `./assets/test_images` directory. The effect can be seen from the table below.
 
-|Input            |  Output |
+|Input            |
 |:-------------------------:|:-------------------------:|
 | ![Example of distorted test image](./assets/output_images/original_frame.jpg) | ![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) |
 
@@ -52,8 +52,8 @@ As the calibration step can take some time, we should make sure the `DistortionC
 ### 2.2 Binary Threshold
 
 With a `ImageThresholder` object, created from its class found in `./src/alf/pipeline/thresholder.py`, both color and gradient thresholds are applied to an image in the `threshold()` function. This function combines the threshold results as a binary image. The table below shows input, gradient thresholded, color thresholded and both threshold combined.
-
-:-------------------------:|:-------------------------:
+| Input                     | gradient | color | combined |
+|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|
 ![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) | ![Example of gradient thresholded image](./assets/output_images/gradient_thresholded_frame.jpg) |
 ![Example of color thresholded image](./assets/output_images/color_thresholded_frame.jpg) | ![Example of combined threshold image](./assets/output_images/thresholded_frame.jpg) |
 
@@ -75,13 +75,9 @@ I verified that my perspective transform was working as expected by drawing the 
 
 | Input                      |  Source & Destination points (marked)         | Warped (marked) |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Example of selection image](./assets/test_images/straight_lines2.jpg) | ![Example of source points selection image](./assets/output_images/src_point_frame.jpg) | ![Example of binary image](./assets/output_images/test5_undistorted_warped_marked.jpg) |
+| ![Example of selection image](./assets/test_images/straight_lines2.jpg) | ![Example of source points selection image](./assets/output_images/src_points_frame.jpg) | ![Example of binary image](./assets/output_images/dst_point_frame.jpg) |
 
 The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesful as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other as in the original picture.
-
-| Perspective Transform output|
-|:-------------------------:|
-| ![Example of binary image](./assets/output_images/test5_undistorted_warped.jpg) |
 
 ### 2.4. Polynomial fitting of lane lines
 

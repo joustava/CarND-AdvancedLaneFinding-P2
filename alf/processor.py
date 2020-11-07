@@ -115,7 +115,7 @@ def frame_pipeline(distortion_corrector):
             # on assets/test_images/straight_lines2.jpg
             pts = np.int32(Roi.src_corners(width, height))
             src_points_frame = cv2.polylines(
-                undistorted_frame, [pts], True, (0, 0, 255), 2)
+                np.copy(undistorted_frame), [pts], True, (0, 0, 255), 2)
             dst_points_frame = warper.warp(src_points_frame)
 
             cv2.imwrite(
@@ -183,6 +183,6 @@ def process_video():
 
 
 pipeline = frame_pipeline(calibrate())
-# pipeline(cv2.imread('./assets/test_images/straight_lines2.jpg'), snapshot=True)
+pipeline(cv2.imread('./assets/test_images/straight_lines2.jpg'), snapshot=True)
 
-process_video()
+# process_video()
