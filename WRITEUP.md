@@ -86,7 +86,7 @@ The images contain the points and lines for illustrative purposed, they will not
 
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
-![alt text][image5]
+![Windowed search](./assets/output_images/warped_annotated_frame.jpg)
 
 ### 2.5. Radius of curvature of the lane and vehicle position with respect to center
 
@@ -98,7 +98,7 @@ The lane visualisation is taken care of within the `alf/processor.py` file.
 A copy of the perspective transformed lanes with polylines and windows is resized and placed within the
 end result of the pipeline.
 
-![Lane visualization][./assets/output_images/overlayed_frame.jpg]
+![Lane visualization](./assets/output_images/overlayed_frame.jpg)
 
 ---
 
