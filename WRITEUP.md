@@ -43,7 +43,7 @@ Once all the calibration data is collected, an image can be undistorted by using
 
 Once we have a calibrated DistortionCorrector object as described in section 1.1. we can simply apply the undistort method on any of our test images found from the `./assets/test_images` directory. The effect can be seen from the table below.
 
-|Input            |
+|Input                      | Output                   |
 |:-------------------------:|:-------------------------:|
 | ![Example of distorted test image](./assets/output_images/original_frame.jpg) | ![Example of undistorted test image](./assets/output_images/undistorted_frame.jpg) |
 
