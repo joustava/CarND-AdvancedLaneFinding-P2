@@ -64,18 +64,18 @@ The perspective transform requires the knowledge of a set of source points which
 The source and destination points are created in the `Roi` class found in `alf/common/roi.py`. 
 For the source points I chose values that created a snug fit on the outsides of the lane when plotted on the `.assets/test_images/straight_lines2` image. The desination points are based on the source points whereby the upper point position are changed so that the resulting polygon becomes a square. This resulted in the following source and destination points:
 
-| SRC points | DST points | 
+| SRC points    | DST points    | 
 |:-------------:|:-------------:|
-| 560, 468      | 160, 0        |
-| 740, 468      | 1150, 0       |
-| 1150, 720     | 1150, 720     |
-| 160, 720      | 160, 720      |
+| 602, 444      | 305, 0        |
+| 680, 444      | 1020, 0       |
+| 1120, 720     | 1020, 720     |
+| 205, 720      | 305, 720      |
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+I verified that my perspective transform was working as expected by drawing the `src` points onto a test image and then inspect that the perspective transformed counterpart contained the points in a rectangular fashion.
 
 | Input                      |  Source & Destination points (marked)         | Warped (marked) |
 |:-------------------------:|:-------------------------:|:-------------------------:|
-| ![Example of selection image](./assets/test_images/straight_lines2.jpg) | ![Example of source points selection image](./assets/output_images/src_points_frame.jpg) | ![Example of binary image](./assets/output_images/dst_point_frame.jpg) |
+| ![Example of selection image](./assets/test_images/straight_lines2.jpg) | ![Example of source points selection image](./assets/output_images/src_points_frame.jpg) | ![Example of binary image](./assets/output_images/dst_points_frame.jpg) |
 
 The images contain the points and lines for illustrative purposed, they will not be drawn in the actual pipeline. It seems that the transform is succesful as the bounding box is a rectangle and the lane lines can be considered to be perpendicular to each other as in the original picture.
 
@@ -101,7 +101,7 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 
 ### 3.1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./assets/output_images/project_video_result.avi)
 
 ---
 

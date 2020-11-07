@@ -114,6 +114,10 @@ def frame_pipeline(distortion_corrector):
             # Check perspective transform configuration
             # on assets/test_images/straight_lines2.jpg
             pts = np.int32(Roi.src_corners(width, height))
+            dst = np.int32(Roi.dst_corners(width, height))
+
+            print(pts)
+            print(dst)
             src_points_frame = cv2.polylines(
                 np.copy(undistorted_frame), [pts], True, (0, 0, 255), 2)
             dst_points_frame = warper.warp(src_points_frame)
