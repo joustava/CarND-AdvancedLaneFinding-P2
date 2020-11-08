@@ -90,13 +90,13 @@ First, from the perspective transformed binary lane frame the line x positions a
 
 | Input                     |  Windowed Search          |
 |:-------------------------:|:-------------------------:|
-| ![Example of warped binary image](./assets/test_images/warped_frame.jpg) | ![Example of windowed search](./assets/output_images/warped_annotated_frame.jpg) |
+| ![Example of warped binary image](./assets/output_images/warped_frame.jpg) | ![Example of windowed search](./assets/output_images/warped_annotated_frame.jpg) |
 
 From the data found the left and right lines are drawn and the lane itself is filled. This visualisation is then perspective transformed back into the original frame perspective.
 
-| Lane visualisation        |  Original perspective                   |
+| Lane visualisation        |  Original perspective     |
 |:-------------------------:|:-------------------------:|
-| ![Example of Lane visualisation](./assets/test_images/warped_lane_frame.jpg) | ![Example of original perspective](./assets/output_images/unwarped_frame.jpg) |
+| ![Example of Lane visualisation](./assets/output_images/warped_lane_frame.jpg) | ![Example of original perspective](./assets/output_images/unwarped_frame.jpg) |
 
 
 ### 2.5. Radius of curvature of the lane and vehicle position with respect to center
