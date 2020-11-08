@@ -5,13 +5,15 @@ verify_ssl = true
 
 [dev-packages]
 green = "3.2.3"
+pylint = "*"
+autopep8 = "*"
 
 [packages]
 numpy = "1.19.0"
 opencv-python = "4.4.0.44"
 scipy="1.5.3"
 imutils="*"
-
+scalene = "*"
 
 [requires]
 python_version = "3.8"

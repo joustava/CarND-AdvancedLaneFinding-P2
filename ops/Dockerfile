@@ -3,8 +3,9 @@ FROM python:3.8
 ENV PYTHONPATH=/app
 
 
-RUN apt-get update ##[edited]
+RUN apt-get update
 RUN apt-get install \
+  'clang' \
   'ffmpeg' \
   'libsm6' \ 
   'libxext6' -y

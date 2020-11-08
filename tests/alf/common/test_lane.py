@@ -1,7 +1,7 @@
 import unittest
 
 
-class TestLAne(unittest.TestCase):
+class TestLane(unittest.TestCase):
 
     def test_upper(self):
         self.assertEqual('foo'.upper(), 'FOO')
