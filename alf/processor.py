@@ -79,12 +79,6 @@ def frame_pipeline(distortion_corrector):
         inset_top = 10
         inset_left = 600
 
-        cv2.rectangle(unwarped_frame, (0, 0), (width, height//2),
-                      (150, 150, 150), -1)
-
-        unwarped_frame[
-            inset_top:inset_top + inset_h,
-            inset_left:inset_left + inset_w] = top_view_inset
         # 7. Plot lines and radius of curvature of the lane and the position of the vehicle
         # with respect to center. We need to make and inverse transform of the lines found in 5.
         # and plot / superimpose them on the original image. The radius and vehicle center can
@@ -92,6 +86,11 @@ def frame_pipeline(distortion_corrector):
         print((rr - rl) / 2)
 
         overlayed_frame = weighted_img(unwarped_frame, frame)
+        cv2.rectangle(overlayed_frame, (0, 0), (width, height//2),
+                      (150, 150, 150), -1)
+        overlayed_frame[
+            inset_top:inset_top + inset_h,
+            inset_left:inset_left + inset_w] = top_view_inset
 
         text_radius1 = 'R(px): {radius}'.format(radius=rl)
         text_radius2 = 'R(m): {radius}'.format(radius=rl * 30/720)
@@ -159,9 +158,9 @@ def frame_pipeline(distortion_corrector):
     return process
 
 
-def process_video():
-    cap = cv2.VideoCapture("./assets/challenge/project_video.mp4")
-    video_out = "./assets/output_images/project_video_result.avi"
+def process_video(video_file_name):
+    cap = cv2.VideoCapture(f"./assets/challenge/{video_file_name}.mp4")
+    video_out = f"./assets/output_images/{video_file_name}_result.avi"
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(video_out, fourcc, 20.0, (1280, 720))
 
@@ -187,6 +186,7 @@ def process_video():
 
 
 pipeline = frame_pipeline(calibrate())
-pipeline(cv2.imread('./assets/test_images/straight_lines2.jpg'), snapshot=True)
+# pipeline(cv2.imread('./assets/test_images/straight_lines2.jpg'), snapshot=True)
 
-# process_video()
+# process_video("project_video")
+process_video("challenge_video")
